@@ -3,11 +3,28 @@ import 'package:flutter_shop_app/data/data.dart';
 import 'package:flutter_shop_app/models/product.dart';
 
 class Products with ChangeNotifier {
+  // bool _showAll = true;
   List<Product> _items = STORED_PRODUCTS;
 
   List<Product> get items {
     return _items;
   }
+
+  List<Product> get favoritedItems {
+    return _items.where((item) => item.isFavorite == true).toList();
+  }
+
+  // void showAllProducts() {
+  //   _showAll = true;
+
+  //   notifyListeners();
+  // }
+
+  // void showFavoritedProducts() {
+  //   _showAll = false;
+
+  //   notifyListeners();
+  // }
 
   void addProduct() {
     // _items.add(item);
@@ -18,6 +35,4 @@ class Products with ChangeNotifier {
     _items.remove(item);
     notifyListeners();
   }
-
-  
 }
