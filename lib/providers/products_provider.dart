@@ -4,7 +4,7 @@ import 'package:flutter_shop_app/providers/product_provider.dart';
 
 class Products with ChangeNotifier {
   // bool _showAll = true;
-  List<Product> _items = STORED_PRODUCTS;
+  List<Product> _items = storedProducts;
 
   List<Product> get items {
     return _items;

@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_shop_app/providers/products_provider.dart';
-import 'package:provider/provider.dart';
 
 class Product with ChangeNotifier {
   final String id;

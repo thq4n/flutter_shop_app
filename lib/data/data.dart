@@ -1,6 +1,6 @@
 import 'package:flutter_shop_app/providers/product_provider.dart';
 
-final List<Product> STORED_PRODUCTS = [
+final List<Product> storedProducts = [
   Product(
     id: 'p1',
     title: 'Red Shirt',
