@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/providers/cart.dart';
 import 'package:flutter_shop_app/providers/products_provider.dart';
+import 'package:flutter_shop_app/screens/cart_screen.dart';
+import 'package:flutter_shop_app/widgets/badge.dart';
 import 'package:flutter_shop_app/widgets/products_grid.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +24,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   void initState() {
     showFavoritedProducts = false;
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -31,6 +34,18 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       appBar: AppBar(
         title: Text("My Shop"),
         actions: [
+          Consumer<Cart>(
+            builder: (ctx, cart, widget) => Badge(
+                child: IconButton(
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(CartScreen.routeName),
+                  icon: Icon(
+                    Icons.shopping_basket,
+                    color: Colors.white,
+                  ),
+                ),
+                value: cart.countCart().toString()),
+          ),
           PopupMenuButton(
             itemBuilder: (_) {
               return [
@@ -56,7 +71,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 });
               }
             },
-          )
+          ),
         ],
       ),
       body: ProductsGrid(showFavoritedProducts),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/data/data.dart';
-import 'package:flutter_shop_app/models/product.dart';
+import 'package:flutter_shop_app/providers/product_provider.dart';
 
 class Products with ChangeNotifier {
   // bool _showAll = true;
@@ -34,5 +34,9 @@ class Products with ChangeNotifier {
   void removeProduct(Product item) {
     _items.remove(item);
     notifyListeners();
+  }
+
+  Product findById(String id){
+    return _items.where((item) => item.id == id).toList().first;
   }
 }

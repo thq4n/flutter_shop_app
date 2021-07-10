@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/models/product.dart';
+import 'package:flutter_shop_app/providers/cart.dart';
+import 'package:flutter_shop_app/providers/product_provider.dart';
 import 'package:flutter_shop_app/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,6 @@ class ProductItem extends StatelessWidget {
               ),
               onPressed: () {
                 product.toggelProductFavorite(product);
-        
               },
             ),
           ),
@@ -43,11 +43,15 @@ class ProductItem extends StatelessWidget {
             product.title,
             textAlign: TextAlign.center,
           ),
-          trailing: IconButton(
-            color: Theme.of(context).accentColor,
-            onPressed: () {},
-            icon: Icon(
-              Icons.add_shopping_cart,
+          trailing: Consumer<Cart>(
+            builder: (_, cart, child) => IconButton(
+              color: Theme.of(context).accentColor,
+              onPressed: () {
+                cart.addItem(product);
+              },
+              icon: Icon(
+                Icons.add_shopping_cart,
+              ),
             ),
           ),
         ),
