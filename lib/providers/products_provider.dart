@@ -26,8 +26,8 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct() {
-    // _items.add(item);
+  void addProduct(Product newProduct) {
+    _items.add(newProduct);
     notifyListeners();
   }
 
@@ -43,4 +43,12 @@ class Products with ChangeNotifier {
   void reload() {
     notifyListeners();
   }
+
+  void modifyProduct(Product newProduct) {
+    var index = _items.indexWhere((item) => item.id == newProduct.id);
+    _items[index] = newProduct;
+    notifyListeners();
+  }
+
+  
 }
