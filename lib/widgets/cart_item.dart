@@ -61,6 +61,51 @@ class CartItem extends StatelessWidget {
           ),
         ),
       ),
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text(
+                "Delete Confirmation",
+                style: TextStyle(
+                  color: Colors.yellow.shade900,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Text("Do you want to remove this item?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text(
+                    "Cancle",
+                    style: TextStyle(
+                      color: Theme.of(context).errorColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
