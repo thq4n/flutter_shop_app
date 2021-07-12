@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/data/data.dart';
 import 'package:flutter_shop_app/providers/product_provider.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   // bool _showAll = true;
@@ -26,9 +29,34 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product newProduct) {
-    _items.add(newProduct);
-    notifyListeners();
+  Future<void> addProduct(Product newProduct) {
+    final url = Uri.parse(
+        "https://my-flutter-app-shop-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
+    return http
+        .post(
+      url,
+      body: json.encode(
+        {
+          "id": newProduct.id,
+          "title": newProduct.title,
+          "description": newProduct.description,
+          "price": newProduct.price,
+          "imageUrl": newProduct.imageUrl,
+          "isFavorite": newProduct.isFavorite,
+        },
+      ),
+    )
+        .catchError(
+      (error) {
+        print(error);
+        throw error;
+      },
+    ).then(
+      (value) {
+        _items.add(newProduct);
+        notifyListeners();
+      },
+    );
   }
 
   void removeProduct(Product item) {
@@ -49,6 +77,4 @@ class Products with ChangeNotifier {
     _items[index] = newProduct;
     notifyListeners();
   }
-
-  
 }
