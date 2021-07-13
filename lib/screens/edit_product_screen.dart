@@ -40,7 +40,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     if (!_form.currentState!.validate()) {
       return;
     }
@@ -52,11 +52,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
       setState(() {
         _isLoading = true;
       });
-
-      Provider.of<Products>(context, listen: false)
-          .addProduct(product)
-          .catchError((error) {
-        return showDialog(
+      try {
+        await Provider.of<Products>(context, listen: false).addProduct(product);
+      } catch (error) {
+        await showDialog<Null>(
           context: context,
           builder: (ctx) {
             return AlertDialog(
@@ -86,17 +85,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
             );
           },
         );
-      }).then(
-        (_) {
-          setState(
-            () {
-              _isLoading = false;
-            },
-          );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
 
-          Navigator.of(context).pop();
-        },
-      );
+        Navigator.of(context).pop();
+      }
     }
 
     // FocusManager.instance.primaryFocus!.unfocus();

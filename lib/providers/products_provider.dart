@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_shop_app/data/data.dart';
 import 'package:flutter_shop_app/providers/product_provider.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   // bool _showAll = true;
-  List<Product> _items = storedProducts;
+  List<Product> _items = [];
 
   List<Product> get items {
     return _items;
@@ -17,46 +16,58 @@ class Products with ChangeNotifier {
     return _items.where((item) => item.isFavorite == true).toList();
   }
 
-  // void showAllProducts() {
-  //   _showAll = true;
-
-  //   notifyListeners();
-  // }
-
-  // void showFavoritedProducts() {
-  //   _showAll = false;
-
-  //   notifyListeners();
-  // }
-
-  Future<void> addProduct(Product newProduct) {
+  Future<void> fetchAndSetProducts() async {
     final url = Uri.parse(
         "https://my-flutter-app-shop-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
-    return http
-        .post(
-      url,
-      body: json.encode(
-        {
-          "id": newProduct.id,
-          "title": newProduct.title,
-          "description": newProduct.description,
-          "price": newProduct.price,
-          "imageUrl": newProduct.imageUrl,
-          "isFavorite": newProduct.isFavorite,
-        },
-      ),
-    )
-        .catchError(
-      (error) {
-        print(error);
-        throw error;
-      },
-    ).then(
-      (value) {
-        _items.add(newProduct);
-        notifyListeners();
-      },
-    );
+    try {
+      final response = await http.get(url);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProducts = [];
+      extractedData.forEach((productId, proData) {
+        loadedProducts.add(Product(
+          id: productId,
+          title: proData["title"],
+          description: proData["description"],
+          price: proData["price"],
+          imageUrl: proData["imageUrl"],
+        ));
+      });
+      _items = loadedProducts;
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> addProduct(Product newProduct) async {
+    try {
+      final url = Uri.parse(
+          "https://my-flutter-app-shop-default-rtdb.asia-southeast1.firebasedatabase.app/products.json");
+      final response = await http.post(
+        url,
+        body: json.encode(
+          {
+            "title": newProduct.title,
+            "description": newProduct.description,
+            "price": newProduct.price,
+            "imageUrl": newProduct.imageUrl,
+            "isFavorite": newProduct.isFavorite,
+          },
+        ),
+      );
+
+      _items.add(Product(
+        description: newProduct.description,
+        id: json.decode(response.body),
+        imageUrl: newProduct.imageUrl,
+        price: newProduct.price,
+        title: newProduct.title,
+        isFavorite: newProduct.isFavorite,
+      ));
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 
   void removeProduct(Product item) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop_app/providers/cart_provider.dart';
+import 'package:flutter_shop_app/providers/products_provider.dart';
 import 'package:flutter_shop_app/screens/cart_screen.dart';
 import 'package:flutter_shop_app/widgets/app_drawer.dart';
 import 'package:flutter_shop_app/widgets/badge.dart';
@@ -21,11 +22,33 @@ class ProductsOverviewScreen extends StatefulWidget {
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var showFavoritedProducts;
 
+  bool _isInit = true;
+  bool _isLoading = false;
+
   @override
   void initState() {
     showFavoritedProducts = false;
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        print("haha");
+        setState(() {
+          _isLoading = false;
+        });
+      });
+      _isInit = false;
+    }
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -75,7 +98,16 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(showFavoritedProducts),
+      body: Stack(children: [
+        ProductsGrid(showFavoritedProducts),
+        if (_isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ]),
     );
   }
 }
