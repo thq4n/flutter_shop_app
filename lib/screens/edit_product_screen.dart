@@ -45,63 +45,64 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState!.save();
-    if (_isEditMode) {
-      Provider.of<Products>(context, listen: false).modifyProduct(product);
-      Navigator.of(context).pop();
-    } else {
-      setState(() {
-        _isLoading = true;
-      });
-      try {
+
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      if (_isEditMode) {
+        await Provider.of<Products>(context, listen: false)
+            .modifyProduct(product);
+      } else {
         await Provider.of<Products>(context, listen: false).addProduct(product);
-      } catch (error) {
-        await showDialog<Null>(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              title: Text(
-                "An error occurred",
-                style: TextStyle(
-                  color: Theme.of(context).errorColor,
-                  fontWeight: FontWeight.bold,
-                ),
+      }
+    } catch (error) {
+      await showDialog<Null>(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(
+              "An error occurred",
+              style: TextStyle(
+                color: Theme.of(context).errorColor,
+                fontWeight: FontWeight.bold,
               ),
-              content: Text("Something went wrong, please try again later!"),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    "OK",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+            ),
+            content: Text("Something went wrong, please try again later!"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "OK",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-            );
-          },
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
 
-        Navigator.of(context).pop();
-      }
+      Navigator.of(context).pop();
     }
-
-    // FocusManager.instance.primaryFocus!.unfocus();
-    // setState(() {
-    //   _titleController.text = product.title;
-    //   _priceController.text = product.price.toStringAsFixed(2);
-    //   _discriptionController.text = product.description;
-    //   _imageUrlController.text = product.imageUrl;
-    // });
   }
+
+  // FocusManager.instance.primaryFocus!.unfocus();
+  // setState(() {
+  //   _titleController.text = product.title;
+  //   _priceController.text = product.price.toStringAsFixed(2);
+  //   _discriptionController.text = product.description;
+  //   _imageUrlController.text = product.imageUrl;
+  // });
 
   @override
   void initState() {
