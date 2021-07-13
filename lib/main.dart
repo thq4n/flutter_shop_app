@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.deepPurple,
           accentColor: Colors.deepOrange,
         ),
-        initialRoute: ProductsOverviewScreen.routeName,
+        initialRoute: UserProductScreen.routeName,
         routes: {
           ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
