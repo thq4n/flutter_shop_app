@@ -36,7 +36,7 @@ class ProductItem extends StatelessWidget {
                 Icons.favorite,
               ),
               onPressed: () {
-                product.toggelProductFavorite(product);
+                product.toggelProductFavorite();
                 Provider.of<Products>(context, listen: false).reload();
               },
             ),

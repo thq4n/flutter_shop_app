@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,11 +20,23 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggelProductFavorite(Product item) {
-    item.isFavorite = !item.isFavorite;
+  void toggelProductFavorite() async {
+    final oldStatus = isFavorite;
+    isFavorite = !oldStatus;
 
     notifyListeners();
-  }
+    try {
+      final url = Uri.parse(
+          "https://my-flutter-app-shop-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json");
 
-  
+      await http.patch(url,
+          body: jsonEncode({
+            "isFavorite": isFavorite,
+          }));
+    } catch (error) {
+      isFavorite = oldStatus;
+      notifyListeners();
+      throw error;
+    }
+  }
 }

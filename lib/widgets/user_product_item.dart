@@ -63,7 +63,30 @@ class UserProductItem extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               Provider.of<Products>(context, listen: false)
-                                  .removeProduct(product);
+                                  .removeProduct(product)
+                                  .catchError(
+                                (error)  {
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      behavior: SnackBarBehavior.floating,
+                                      content: Text(
+                                        "Delete fail, try again!",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      backgroundColor:
+                                          Theme.of(context).errorColor,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                    ),
+                                  );
+                                },
+                              );
                               Navigator.of(context).pop();
                             },
                             child: Text(

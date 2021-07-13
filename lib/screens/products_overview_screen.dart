@@ -40,7 +40,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       });
 
       Provider.of<Products>(context).fetchAndSetProducts().then((_) {
-        print("haha");
         setState(() {
           _isLoading = false;
         });

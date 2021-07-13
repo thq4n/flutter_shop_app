@@ -35,8 +35,7 @@ class Cart with ChangeNotifier {
     } else {
       _items.putIfAbsent(
         item.id,
-        () => CartItem(
-            id: UniqueKey().toString(), price: item.price, title: item.title),
+        () => CartItem(id: item.id, price: item.price, title: item.title),
       );
     }
 

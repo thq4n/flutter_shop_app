@@ -22,15 +22,16 @@ class Products with ChangeNotifier {
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
       final List<Product> loadedProducts = [];
       extractedData.forEach((productId, proData) {
         loadedProducts.add(Product(
-          id: productId,
-          title: proData["title"],
-          description: proData["description"],
-          price: proData["price"],
-          imageUrl: proData["imageUrl"],
-        ));
+            id: productId,
+            title: proData["title"],
+            description: proData["description"],
+            price: proData["price"],
+            imageUrl: proData["imageUrl"],
+            isFavorite: proData["isFavorite"]));
       });
       _items = loadedProducts;
       notifyListeners();
@@ -58,7 +59,7 @@ class Products with ChangeNotifier {
 
       _items.add(Product(
         description: newProduct.description,
-        id: json.decode(response.body),
+        id: json.decode(response.body)["name"],
         imageUrl: newProduct.imageUrl,
         price: newProduct.price,
         title: newProduct.title,
@@ -66,13 +67,25 @@ class Products with ChangeNotifier {
       ));
       notifyListeners();
     } catch (error) {
+      print("haha");
+      print(error);
       throw error;
     }
   }
 
-  void removeProduct(Product item) {
-    _items.remove(item);
-    notifyListeners();
+  Future<void> removeProduct(Product product) async {
+    var index = _items.indexOf(product);
+    try {
+      final url = Uri.parse(
+          "https://my-flutter-app-shop-default-rtdb.asia-southeast1.firebasedatabase.app/products/${product.id}.json");
+      http.delete(url);
+      _items.remove(product);
+      notifyListeners();
+    } catch (error) {
+      _items.insert(index, product);
+      notifyListeners();
+      throw error;
+    }
   }
 
   Product findById(String id) {
