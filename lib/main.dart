@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop_app/providers/auth_provider.dart';
 import 'package:flutter_shop_app/providers/order_provider.dart';
+import 'package:flutter_shop_app/screens/auth_screen.dart';
 import 'package:flutter_shop_app/screens/cart_screen.dart';
 import 'package:flutter_shop_app/screens/edit_product_screen.dart';
 import 'package:flutter_shop_app/screens/order_screen.dart';
@@ -22,33 +24,43 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Products(),
+          create: (ctx) => Auth(),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Orders(),
-        )
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'My Shop',
-        theme: ThemeData(
-          fontFamily: "Lato",
-          primarySwatch: Colors.deepPurple,
-          accentColor: Colors.deepOrange,
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          create: (context) => Orders(null, null, []),
+          update: (ctx, auth, priviousOrders) =>
+              Orders(auth.token, auth.userId, priviousOrders!.orders),
         ),
-        initialRoute: ProductsOverviewScreen.routeName,
-        routes: {
-          ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrderScreen.routeName: (ctx) => OrderScreen(),
-          UserProductScreen.routeName: (ctx) => UserProductScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen(),
-        },
-      ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (context) => Products(null, null, []),
+          update: (ctx, auth, priviousProducts) =>
+              Products(auth.token, auth.userId, priviousProducts!.items),
+        ),
+      ],
+      child: Consumer<Auth>(builder: (ctx, authData, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'My Shop',
+          theme: ThemeData(
+            fontFamily: "Lato",
+            primarySwatch: Colors.deepPurple,
+            accentColor: Colors.deepOrange,
+          ),
+          home: authData.isAuth() ? ProductsOverviewScreen() : AuthScreen(),
+          routes: {
+            ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrderScreen.routeName: (ctx) => OrderScreen(),
+            UserProductScreen.routeName: (ctx) => UserProductScreen(),
+            EditProductScreen.routeName: (ctx) => EditProductScreen(),
+            AuthScreen.routeName: (ctx) => AuthScreen(),
+          },
+        );
+      }),
     );
   }
 }

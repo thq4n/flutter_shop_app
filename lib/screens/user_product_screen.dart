@@ -6,16 +6,15 @@ import 'package:flutter_shop_app/widgets/user_product_item.dart';
 import 'package:provider/provider.dart';
 
 class UserProductScreen extends StatelessWidget {
-  static String routeName = "/mmanage-products";
+  static String routeName = "/manage-products";
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    await Provider.of<Products>(context, listen: false)
+        .fetchAndSetProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    var productsData = Provider.of<Products>(context);
-    var products = productsData.items;
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
@@ -28,18 +27,29 @@ class UserProductScreen extends StatelessWidget {
               icon: Icon(Icons.add))
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemBuilder: (ctx, index) {
-              var product = products[index];
-              return UserProductItem(product);
-            },
-            itemCount: products.length,
-          ),
-        ),
+      body: FutureBuilder(
+        future: Provider.of<Products>(context, listen: false)
+            .fetchAndSetProducts(true),
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Consumer<Products>(
+                    builder: (ctx, productData, child) => RefreshIndicator(
+                      onRefresh: () => _refreshProducts(context),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.builder(
+                          itemBuilder: (ctx, index) {
+                            var product = productData.items[index];
+                            return UserProductItem(product);
+                          },
+                          itemCount: productData.items.length,
+                        ),
+                      ),
+                    ),
+                  ),
       ),
     );
   }
