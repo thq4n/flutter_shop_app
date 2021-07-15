@@ -157,9 +157,7 @@ class _AuthCardState extends State<AuthCard>
       } else {
         await Provider.of<Auth>(context, listen: false)
             .signUp(_authData['email']!, _authData['password']!);
-        setState(() {
-          _authMode = AuthMode.Login;
-        });
+        _switchAuthMode();
       }
     } on HttpException catch (httpError) {
       var errorMessage = "";
@@ -186,6 +184,7 @@ class _AuthCardState extends State<AuthCard>
   }
 
   void _switchAuthMode() {
+    _formKey.currentState!.reset();
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;

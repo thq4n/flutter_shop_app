@@ -12,7 +12,8 @@ class Auth with ChangeNotifier {
   String? _userId;
   Timer? _authTimer;
 
-  Future<void> authenticateUser(String email, String password, Uri url) async {
+  Future<void> authenticateUser(String email, String password, Uri url,
+      [bool isSignUp = false]) async {
     final response = await http.post(url,
         body: json.encode({
           "email": email,
@@ -22,6 +23,10 @@ class Auth with ChangeNotifier {
     final responseData = json.decode(response.body);
     if (responseData["error"] != null) {
       throw HttpException(responseData["error"]["message"]);
+    }
+
+    if (isSignUp) {
+      return;
     }
 
     _token = responseData["idToken"];
@@ -94,7 +99,7 @@ class Auth with ChangeNotifier {
     final url = Uri.parse(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDaQUCB8uKtTOkEh-Awu4fpExdVLfXP5yU");
 
-    return authenticateUser(email, password, url);
+    return authenticateUser(email, password, url, true);
   }
 
   Future<void> signIn(String email, String password) async {
