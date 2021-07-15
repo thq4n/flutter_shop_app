@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   // bool _showAll = true;
-  final String? _token;
-  final String? _userId;
+   String? _token;
+   String? _userId;
 
   List<Product> _items = [];
 
@@ -20,6 +20,12 @@ class Products with ChangeNotifier {
   List<Product> get favoritedItems {
     return _items.where((item) => item.isFavorite == true).toList();
   }
+
+  void updateUser(String token, String id) {
+  _userId = id;
+  _token = token;
+  notifyListeners();
+}
 
   Future<void> fetchAndSetProducts([bool isFilterbyUser = false]) async {
     final filterString =
