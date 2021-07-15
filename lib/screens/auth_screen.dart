@@ -204,7 +204,7 @@ class _AuthCardState extends State<AuthCard>
   void initState() {
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 350),
     );
 
     _heightAnimation = Tween<Size>(
