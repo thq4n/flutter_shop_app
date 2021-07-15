@@ -7,6 +7,7 @@ import 'package:flutter_shop_app/screens/edit_product_screen.dart';
 import 'package:flutter_shop_app/screens/order_screen.dart';
 import 'package:flutter_shop_app/screens/product_detail_screen.dart';
 import 'package:flutter_shop_app/screens/products_overview_screen.dart';
+import 'package:flutter_shop_app/screens/splash_screen.dart';
 import 'package:flutter_shop_app/screens/user_product_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +50,14 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.deepPurple,
             accentColor: Colors.deepOrange,
           ),
-          home: authData.isAuth() ? ProductsOverviewScreen() : AuthScreen(),
+          home: authData.isAuth()
+              ? ProductsOverviewScreen()
+              : FutureBuilder(
+                  future: authData.tryAutoLogin(),
+                  builder: (ctx, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen()),
           routes: {
             ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
