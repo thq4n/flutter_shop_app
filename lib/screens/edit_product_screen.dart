@@ -270,8 +270,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               ? Center(
                                   child: Text("Empty"),
                                 )
-                              : Image.network(
-                                  _imageUrlController.text,
+                              : FadeInImage(
+                                  placeholder: AssetImage(
+                                      "assets/images/placeholder-image.png"),
+                                  image: NetworkImage(
+                                    _imageUrlController.text,
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                         ),

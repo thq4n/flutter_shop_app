@@ -48,11 +48,14 @@ class CartItem extends StatelessWidget {
             leading: Container(
               height: 50,
               width: 50,
-              child: Image.network(
-                Provider.of<Products>(context, listen: false)
-                    .findById(productId)
-                    .imageUrl,
-                fit: BoxFit.fitWidth,
+              child: FadeInImage(
+                placeholder: AssetImage("assets/images/placeholder-image.png"),
+                image: NetworkImage(
+                  Provider.of<Products>(context, listen: false)
+                      .findById(productId)
+                      .imageUrl,
+                ),
+                fit: BoxFit.cover,
               ),
             ),
             title: Text(title),

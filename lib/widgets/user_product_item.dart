@@ -16,9 +16,12 @@ class UserProductItem extends StatelessWidget {
         leading: Container(
           height: 50,
           width: 50,
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.fitWidth,
+          child: FadeInImage(
+            placeholder: AssetImage("assets/images/placeholder-image.png"),
+            image: NetworkImage(
+              product.imageUrl,
+            ),
+            fit: BoxFit.cover,
           ),
         ),
         title: Text(product.title),
@@ -65,7 +68,7 @@ class UserProductItem extends StatelessWidget {
                               Provider.of<Products>(context, listen: false)
                                   .removeProduct(product)
                                   .catchError(
-                                (error)  {
+                                (error) {
                                   ScaffoldMessenger.of(context)
                                       .hideCurrentSnackBar();
                                   ScaffoldMessenger.of(context).showSnackBar(
