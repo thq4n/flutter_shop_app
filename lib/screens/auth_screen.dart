@@ -107,7 +107,8 @@ class _AuthCardState extends State<AuthCard>
   final _passwordController = TextEditingController();
 
   late AnimationController _animationController;
-  late Animation<Size> _heightAnimation;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
 
   void _showErrorMessage(String message) {
     showDialog(
@@ -207,15 +208,16 @@ class _AuthCardState extends State<AuthCard>
       duration: Duration(milliseconds: 300),
     );
 
-    _heightAnimation = Tween<Size>(
-            begin: Size(double.infinity, 260.0),
-            end: Size(double.infinity, 320.0))
-        .animate(
+    _slideAnimation =
+        Tween<Offset>(begin: Offset(0, -1), end: Offset(0, 0)).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.linear,
       ),
     );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeIn));
 
     super.initState();
   }
@@ -268,19 +270,32 @@ class _AuthCardState extends State<AuthCard>
                     _authData['password'] = value!;
                   },
                 ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                        : null,
+                AnimatedContainer(
+                  duration: Duration(microseconds: 300),
+                  curve: Curves.easeIn,
+                  constraints: BoxConstraints(
+                      minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                      maxHeight: _authMode == AuthMode.Signup ? 120 : 0),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: TextFormField(
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration:
+                            InputDecoration(labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+                              }
+                            : null,
+                      ),
+                    ),
                   ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
