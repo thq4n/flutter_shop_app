@@ -21,7 +21,7 @@ class Products with ChangeNotifier {
     return _items.where((item) => item.isFavorite == true).toList();
   }
 
-  void updateUser(String token, String id) {
+  void updateUser(String? token, String? id) {
   _userId = id;
   _token = token;
   notifyListeners();
