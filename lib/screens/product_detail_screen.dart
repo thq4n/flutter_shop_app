@@ -18,17 +18,37 @@ class ProductDetailScreen extends StatelessWidget {
             expandedHeight: 300,
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(product.title),
-              background: Hero(
-                tag: product.id,
-                child: FadeInImage(
-                  placeholder:
-                      AssetImage("assets/images/placeholder-image.png"),
-                  image: NetworkImage(
-                    product.imageUrl,
+              title: Text(
+                product.title,
+              ),
+              collapseMode: CollapseMode.pin,
+              background: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 350,
+                    child: Hero(
+                      tag: product.id,
+                      child: FadeInImage(
+                        placeholder:
+                            AssetImage("assets/images/placeholder-image.png"),
+                        image: NetworkImage(
+                          product.imageUrl,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  fit: BoxFit.cover,
-                ),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 70,
+                      width: double.infinity,
+                      decoration:
+                          BoxDecoration(color: Colors.black.withOpacity(0.7)),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
@@ -38,9 +58,16 @@ class ProductDetailScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                  "\$${product.price.toStringAsFixed(2)}",
-                  style: TextStyle(color: Colors.grey, fontSize: 20),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.grey),
+                    child: Text(
+                      "\$${product.price.toStringAsFixed(2)}",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -62,6 +89,11 @@ class ProductDetailScreen extends StatelessWidget {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Icon(Icons.arrow_back),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     );
   }
 }
